@@ -1,0 +1,7 @@
+# Environment variables - never commit passwords!
+.env
+*.env
+
+# Docker volumes
+nifi/
+oracle/oradata/
