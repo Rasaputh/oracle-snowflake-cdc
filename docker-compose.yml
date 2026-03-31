@@ -9,15 +9,16 @@ services:
     image: container-registry.oracle.com/database/free:latest
     container_name: oracle-23ai
     ports:
-      - "1521:1521"    # Oracle DB port
-      - "5500:5500"    # Oracle EM Express port
+      - "1521:1521"
+      - "5500:5500"
     environment:
-      - ORACLE_PWD=Welcome1234#    # password for SYS/SYSTEM user
+      - ORACLE_PWD=Welcome1234#
       - ORACLE_CHARACTERSET=AL32UTF8
     volumes:
       - oracle-data:/opt/oracle/oradata
       - ./oracle:/opt/oracle/scripts/setup
     shm_size: '1gb'
+    mem_limit: 3g
 
   # ============================================
   # Apache NiFi (CDC Pipeline)
@@ -25,12 +26,15 @@ services:
   nifi:
     image: apache/nifi:latest
     container_name: nifi
+    mem_limit: 1.5g
     ports:
-      - "8443:8443"    # NiFi web UI port
+      - "8444:8443"
     environment:
       - NIFI_WEB_HTTPS_PORT=8443
+      - NIFI_WEB_PROXY_HOST=localhost:8444
       - SINGLE_USER_CREDENTIALS_USERNAME=admin
       - SINGLE_USER_CREDENTIALS_PASSWORD=admin123456789
+      - JAVA_OPTS=-Xmx1g -Xms512m
     volumes:
       - nifi-data:/opt/nifi/nifi-current/data
       - ./nifi:/opt/nifi/nifi-current/conf/flow

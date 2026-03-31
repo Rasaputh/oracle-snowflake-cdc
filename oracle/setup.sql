@@ -19,3 +19,14 @@ GRANT DBA TO c##xstrmadmin CONTAINER=ALL;
 GRANT XSTREAM_CAPTURE TO c##xstrmadmin CONTAINER=ALL;
 GRANT CONNECT, RESOURCE TO c##xstrmadmin CONTAINER=ALL;
 
+-- Step 5: Auto-update UPDATED_AT on row changes
+-- This ensures QueryDatabaseTable with Maximum-value Columns
+-- picks up UPDATE operations, not just INSERTs.
+CREATE OR REPLACE TRIGGER trg_employees_updated_at
+BEFORE UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    :NEW.updated_at := CURRENT_TIMESTAMP;
+END;
+/
+
